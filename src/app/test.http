@@ -1,0 +1,26 @@
+@url = https://us-central1-pav2api.cloudfunctions.net/app/api/cursos
+###
+get {{url}}/20
+###
+put {{url}}/20
+Content-Type: application/json
+
+{
+  "id": "20",
+  "nombre": "Algoritmos y estructuras de datos ",
+  "cupo": 16,
+  "vigente": true,
+  "fecha": "2121-10-22T03:00:00.000Z"
+}
+###
+post {{url}}/articulosfamilias/
+Content-Type: application/json
+
+{
+  "IdArticuloFamilia": 0,
+  "Nombre": "FAMILIA 0"
+}
+###
+delete {{url}}/articulosfamilias/14
+###
+get {{url}}/articulosfamilias?nombre=-

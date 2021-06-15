@@ -1,0 +1,141 @@
+<h1> {{ Titulo }} <small> {{TituloAccionABMC[AccionABMC]}}</small></h1>
+
+<hr/>
+    &nbsp;
+
+    <div id="divTablaResultados" class="col-sm-12" *ngIf="AccionABMC == 'L' && Items?.length > 0">
+        <table class="table table-bordered table-striped ">
+            <thead>
+                <tr>
+                    <th class="text-center">Id</th>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Cupo</th>
+                    <th class="text-center">Fecha</th>
+                    <th class="text-center">Vigente</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of Items">
+                    <td class="text-center"> {{ item.id }} </td>
+                    <td class="text-center"> {{ item.nombre | uppercase }} </td>
+                    <td class="text-center"> {{ item.cupo }} </td>
+                    <td class="text-center"> {{ item.fecha | date }} </td>
+                    <td class="text-center"> {{ item.vigente ? "Si": "No" }} </td>
+                    <td class="text-center text-nowrap">
+                        <button type="button" class="btn btn-sm btn-outline-primary" title="Modificar" (click)="Modificar(item)">
+                            <span class="fas fa-pencil-alt"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- No se encontraron registros-->
+
+    <div id="divMsjFormBusqueda" *ngIf="AccionABMC == 'L' && Items?.length == 0" class="alert alert-info">
+        <span class="fas fa-exclamation-sign"></span> {{Mensajes['SD']}}
+    </div>
+
+<!-- Registro en Alta,Modificacion o Consulta -->
+<form name='FormModificar' [formGroup]="FormModificar" class="bg-light" *ngIf="AccionABMC != 'L'">
+
+    <fieldset>
+        <!--campo nombre-->
+        <div class="row form-group mb-2 mt-2">
+            <label class="col-form-label col-sm-2 offset-sm-2" for="id">
+                Id <span class="text-danger">*</span>
+            </label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control text-uppercase" formControlName="id" [ngClass]="{'is-invalid': (FormModificar.controls.id.touched || submitted)
+                && FormModificar.controls.id.errors}" />
+                <span class="text-danger" *ngIf="FormModificar.controls.id.errors?.required 
+                && (FormModificar.controls.id.touched || submitted)">Dato Requerido
+                </span>
+                <span class="text-danger" *ngIf="FormModificar.controls.id.errors?.pattern">
+                    Dato num&eacute;rico, 1 a 10 digitos.
+                </span>
+
+            </div>
+        </div>
+            <div class="form-group row mb-2">
+            <label class="col-form-label col-sm-2 offset-sm-2" for="nombre">
+                Nombre <span class="text-danger">*</span>
+            </label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control text-uppercase" formControlName="nombre" [ngClass]="{'is-invalid': (FormModificar.controls.nombre.touched || submitted)
+                && FormModificar.controls.nombre.errors}" />
+                <span class="text-danger" *ngIf="FormModificar.controls.nombre.errors?.required 
+                && (FormModificar.controls.nombre.touched || submitted)">Dato Requerido
+                </span>
+                <span class="text-danger" *ngIf="
+                FormModificar.controls.nombre.errors?.minlength || FormModificar.controls.nombre.errors?.maxlength ">
+                Dato de texto, 4 a 50 caracteres.
+                </span>
+
+            </div>
+        </div>
+            <div class="form-group row mb-2">
+            <label class="col-form-label col-sm-2 offset-sm-2" for="cupo">
+                Cupo <span class="text-danger">*</span>
+            </label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control text-uppercase" formControlName="cupo" [ngClass]="{'is-invalid': (FormModificar.controls.cupo.touched || submitted)
+                && FormModificar.controls.cupo.errors}" />
+                <span class="text-danger" *ngIf="FormModificar.controls.cupo.errors?.required 
+                && (FormModificar.controls.cupo.touched || submitted)">Dato Requerido
+                </span>
+                <span class="text-danger" *ngIf="FormModificar.controls.cupo.errors?.pattern">
+                    Dato num&eacute;rico, 1 a 5 digitos.
+                </span>
+
+            </div>
+        </div>
+            <div class="form-group row mb-2">
+                <label class="col-form-label col-sm-2 offset-sm-2">
+                    Fecha<span class="text-danger">*</span>
+                </label>
+                <div class="col-sm-6">
+                    <input class="form-control" name="fecha" formControlName="fecha" [ngClass]="{'is-invalid': (FormModificar.controls.fecha.touched || submitted)
+                    && FormModificar.controls.fecha.errors}" />
+                    <span class="text-danger" *ngIf="(FormModificar.controls.fecha.touched || submitted) 
+                    && FormModificar.controls.fecha.errors?.required">Dato Requerido
+                    </span>
+                    <span class="text-danger" *ngIf="FormModificar.controls.fecha.errors?.pattern">
+                        Dato Fecha, formato dd/mm/aaaa.
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row mb-2">
+                <label class="col-form-label col-sm-2 offset-sm-2" for="vigente">Vigente</label>
+                <div class="col-sm-6">
+                    <select name="vigente"  class="form-control" formControlName="vigente">
+                        <option *ngFor="let opt of OpcionesActivo" [ngValue]="opt.Id">
+                            {{ opt.Nombre }}
+                        </option>
+                        </select>
+                </div>
+            </div>
+
+    </fieldset>
+
+    <hr/>
+    <!-- Botones Grabar, Cancelar/Volver -->
+    <div class="row justify-content-center">
+        <div class="col">
+        <button type="button" class="btn btn-primary col-3 offset-3" (click)="Grabar()" *ngIf=" AccionABMC == 'M'" [disabled]="FormModificar.invalid">
+            <span class="fas fa-check"></span> Grabar
+        </button>
+        <button type="button" class="btn btn-warning col-3 m-2" (click)="Volver()">
+            <span class="fas fa-undo"></span> {{ AccionABMC == 'M' ? 'Cancelar' : 'Volver'}}
+        </button>
+    </div>
+    </div>
+
+    <!--texto: Revisar los datos ingresados...-->
+    <div id="divMsjFormModificar" class="row alert alert-danger" *ngIf="FormModificar.invalid && submitted">
+        <span class="fas fa-exclamation-sign"></span>{{Mensajes['RD']}}
+    </div>
+
+</form>
